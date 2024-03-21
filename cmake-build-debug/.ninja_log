@@ -1,0 +1,17 @@
+# ninja log v5
+80	1463	7327073122115100	CMakeFiles/Task2.dir/src/Directory.cpp.obj	b0a7bf34c657b02d
+140	404	7327076911834606	Task2.exe	a5e291ebbc8994e4
+5	84	7326704270323953	CMakeFiles/Task2.dir/main.cpp.obj	5a2c13991a7239b3
+60	1417	7326703885762517	CMakeFiles/Task2.dir/tests.cpp.obj	9f7bcbe2f70ec457
+8	664	7326763166591262	CMakeFiles/Task2.dir/src/FileSystemObject.cpp.obj	f1154df71fb8e3b3
+53	1276	7327073120194433	CMakeFiles/Task2.dir/src/SymbolicLink.cpp.obj	dc73410266634e4
+28	1229	7327073119787105	CMakeFiles/Task2.dir/src/File.cpp.obj	5c4f5093d70f9745
+2	366	7327086290013245	build.ninja	a9d6f33b2cb1b62
+65	1306	7327073120536391	CMakeFiles/Task2.dir/src/FileSystem.cpp.obj	aadc093bfaf69360
+41	1331	7327073120707182	CMakeFiles/Task2.dir/src/HardLink.cpp.obj	adf74e6640618884
+48	262	7327044451874329	CMakeFiles/Task2.dir/testDirectory.cpp.obj	83c006a5d1ebee1a
+20	1385	7327073121299608	CMakeFiles/Task2.dir/src/Link.cpp.obj	faaa14fa166e63c4
+89	1424	7327073121727043	CMakeFiles/Task2.dir/app.cpp.obj	721198f5df9d1bd9
+15	139	7327076909358531	CMakeFiles/Task2.dir/Google_test/DateTest.cpp.obj	45aa1f9528cd9025
+8	843	7327087873576328	CMakeFiles/Task2.dir/app.cpp.obj	721198f5df9d1bd9
+843	1129	7327087876272100	Task2.exe	ae927f4dc803d9d6
