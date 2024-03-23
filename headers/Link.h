@@ -15,9 +15,12 @@ using namespace std;
 class Link : public FileSystemObject {
 protected:
     FileSystemObject *target;
+    string extension;
+    size_t size;
 
 public:
-    Link(const string &objectName, Directory *parentObject, FileSystemObject *target);
+    Link(const string &objectName, Directory *parentObject, FileSystemObject *target, const string &extension,
+         size_t size);
 
     ~Link();
 

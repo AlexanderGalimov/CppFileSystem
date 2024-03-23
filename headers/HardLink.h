@@ -11,8 +11,9 @@
 
 class HardLink : public Link {
 public:
-    HardLink(const std::string &objectName, Directory *parentObject, FileSystemObject *target)
-            : Link(objectName, parentObject, target) {}
+
+    HardLink(const string &objectName, Directory *parentObject, FileSystemObject *target, const string &extension,
+             size_t size);
 
     void remove() override;
 

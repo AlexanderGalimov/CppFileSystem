@@ -17,8 +17,7 @@ protected:
     size_t size;
 
 public:
-    File(const string &objectName, Directory *parentObject, const string &extension, size_t size)
-            : FileSystemObject(objectName, parentObject), extension(extension), size(size) {}
+    File(const string &objectName, Directory *parentObject, const string &extension, size_t size);
 
     ~File();
 

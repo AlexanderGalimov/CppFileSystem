@@ -13,8 +13,8 @@ using namespace std;
 
 class SymbolicLink : public Link {
 public:
-    SymbolicLink(const string &objectName, Directory *parentObject, FileSystemObject *target)
-            : Link(objectName, parentObject, target) {}
+    SymbolicLink(const string &objectName, Directory *parentObject, FileSystemObject *target, const string &extension,
+                 size_t size);
 
     void toString() override;
 };

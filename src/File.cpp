@@ -14,7 +14,6 @@ File::~File() {
 void File::setExtension(const string &newExtension) {
     extension = newExtension;
     modifyDate();
-    cout << "Extension changed to" << extension << endl;
 }
 
 void File::remove() {
@@ -45,6 +44,9 @@ const string &File::getExtension() const {
 size_t File::getSize() const {
     return size;
 }
+
+File::File(const string &objectName, Directory *parentObject, const string &extension, size_t size) : FileSystemObject(
+        objectName, parentObject), extension(extension), size(size) {}
 
 
 

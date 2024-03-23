@@ -5,22 +5,20 @@
 #include "../headers/Directory.h"
 #include <iostream>
 
-Directory::Directory(const std::string &objectName, Directory *parentObject)
+using namespace std;
+
+Directory::Directory(const string &objectName, Directory *parentObject)
         : FileSystemObject(objectName, parentObject) {}
 
 Directory::~Directory() {
+    cout << "Directory " << name << " Deleted" << endl;
     clearVector();
-    std::cout << "Directory " << name << " Deleted" << std::endl;
 }
 
 void Directory::remove() {
-    if (name == "root") {
-        return;
-    } else {
-        clearVector();
-        if (parent != nullptr) {
-            parent->removeElement(getName());
-        }
+    clearVector();
+    if (parent != nullptr) {
+        parent->removeElement(getName());
     }
 }
 
@@ -31,24 +29,16 @@ void Directory::clearVector() {
     objects.clear();
 }
 
-void Directory::rename(const std::string &newName) {
-    if (name == "root") {
-        std::cout << "Can't rename root directory";
-    } else {
-        FileSystemObject::rename(newName);
-    }
+void Directory::rename(const string &newName) {
+    FileSystemObject::rename(newName);
 }
 
 void Directory::move(Directory *oldDirectory, Directory *newDirectory) {
-    if (name == "root") {
-        std::cout << "Can't move root directory" << std::endl;
-    } else {
-        destination = newDirectory->getDestination() + "/" + name;
-        newDirectory->addObject(this);
-        oldDirectory->removeElement(name);
-        setParent(newDirectory);
-        modifyDate();
-    }
+    destination = newDirectory->getDestination() + "/" + name;
+    newDirectory->addObject(this);
+    oldDirectory->removeElement(name);
+    setParent(newDirectory);
+    modifyDate();
 }
 
 void Directory::removeElement(const string &elementName) {
@@ -60,15 +50,13 @@ void Directory::removeElement(const string &elementName) {
         }
     }
     modifyDate();
-    cout << "Element successfully removed" << endl;
 }
 
 void Directory::addObject(FileSystemObject *object) {
-    objects.push_back(object);
     object->setDestination(destination + "/" + object->getName());
     object->setParent(this);
+    objects.push_back(object);
     modifyDate();
-    cout << "Successfully added" << endl;
 }
 
 void Directory::toString() {

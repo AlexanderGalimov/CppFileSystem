@@ -12,72 +12,207 @@
 
 #include <sstream>
 
-void cd(const string &path, FileSystem *fileSystem, Directory *root) {
-    if (path.empty()) {
-        cout << "Invalid path." << endl;
-        return;
+
+class Logger {
+public:
+
+    static void logAddObjectToDirectory() {
+        cout << "Successfully added to directory" << endl;
     }
 
-    Directory *targetDirectory = root;
-    size_t start = 0;
-    size_t end = path.find('/');
+    static void logIncorrectFileName() {
+        cout << "Incorrect filename" << endl;
+    }
 
-    while (end != string::npos) {
-        string directory = path.substr(start, end - start);
-        if (directory == "..") {
-            if (targetDirectory->getParent() != nullptr) {
-                targetDirectory = targetDirectory->getParent();
+    static void logObjectNotFound(const string &name) {
+        cout << "Object " << name << " " << "not found" << endl;
+    }
+
+    static void logUnknownCommand() {
+        cout << "Unknown command" << endl;
+    }
+
+    static void logIncorrectLinkType(const string &type) {
+        cout << "Type: " << type << " " << "isn't correct" << endl;
+    }
+
+    static void logUnsuccessfullyRename(const string &name) {
+        cout << "Can't rename root directory" << endl;
+    }
+
+    static void logSuccessfullyRename(const string &name) {
+        cout << "File System Object " << name << " renamed" << endl;
+    }
+
+    static void logUnsuccessfullyMove(const string &name) {
+        cout << "Can't move root directory" << endl;
+    }
+
+    static void logSuccessfullyMove(const string &name) {
+        cout << "File System Object " << name << " moved" << endl;
+    }
+
+    static void logDelete(const string &name) {
+        cout << "File System Object " << name << " Deleted" << endl;
+    }
+
+    static void logExtensionChange(const string &extension) {
+        cout << "Extension changed to" << extension << endl;
+    }
+
+    static void logDest() {
+        cout << "You are in: " << endl;
+    }
+};
+
+class UserControlSystem {
+private:
+    FileSystem *home;
+    Directory *root;
+
+public:
+    UserControlSystem(FileSystem *home) : home(home) {
+        root = home->getRootDirectory();
+    }
+
+    virtual ~UserControlSystem() {
+    }
+
+    void mkdir(const string &dirName) {
+        Directory *newDir = new Directory(dirName, home->getCurrentDirectory());
+        Directory *currDir = home->getCurrentDirectory();
+        currDir->addObject(newDir);
+    }
+
+    void ls() {
+        home->getCurrentDirectory()->printInner();
+    }
+
+    void rm(const string &name) {
+        FileSystemObject *target = nullptr;
+        for (auto &obj: home->getCurrentDirectory()->getObjects()) {
+            if (obj->getName() == name) {
+                target = obj;
+                break;
+            }
+        }
+        if (target == nullptr) {
+            Logger::logObjectNotFound(name);
+        } else {
+            target->remove();
+        }
+    }
+
+    bool isRoot(const string &name) {
+        if (name == "root" || name == "/") {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    void touchLink(const string &name, const string &type, const string &path, const string &ext, size_t size) {
+        FileSystemObject *targetObject = findDirectory(path);
+        if (targetObject != nullptr) {
+            if (type == "-s") {
+                SymbolicLink *newLink = new SymbolicLink(name, home->getCurrentDirectory(), targetObject, ext, size);
+                home->getCurrentDirectory()->addObject(newLink);
+            } else {
+                HardLink *newLink = new HardLink(name, home->getCurrentDirectory(), targetObject, ext, size);
+                home->getCurrentDirectory()->addObject(newLink);
             }
         } else {
+            Logger::logObjectNotFound(name);
+        }
+    }
+
+    void touchFile(const string &name, const string &ext, size_t size) {
+        File *newFile = new File(name, home->getCurrentDirectory(), ext, size);
+        home->getCurrentDirectory()->addObject(newFile);
+    }
+
+    Directory *findDirectory(const string &path) {
+        if (path.empty()) {
+            Logger::logIncorrectFileName();
+            return nullptr;
+        }
+
+        Directory *oldCurr = home->getCurrentDirectory();
+
+        if (path == "..") {
+            return oldCurr->getParent();
+        }
+
+        Directory *current;
+
+        if (path == "root" || path == "root/") {
+            return home->getRootDirectory();
+        }
+
+        if (path[0] == '/') {
+            current = root;
+        } else {
+            current = home->getCurrentDirectory();
+        }
+
+        vector<string> components;
+        stringstream ss(path);
+        string component;
+        while (getline(ss, component, '/')) {
+            if (!component.empty() && component != ".") {
+                components.push_back(component);
+            }
+        }
+
+        for (const string &comp: components) {
             bool found = false;
-            for (auto &obj: targetDirectory->getObjects()) {
-                if (obj->getName() == directory && dynamic_cast<Directory *>(obj) != nullptr) {
-                    targetDirectory = dynamic_cast<Directory *>(obj);
+            for (FileSystemObject *object: current->getObjects()) {
+                Directory *dir = dynamic_cast<Directory *>(object);
+                if (dir && dir->getName() == comp) {
+                    current = dir;
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                cout << "Directory not found: " << directory << endl;
-                return;
+                return nullptr;
             }
         }
-        start = end + 1;
-        end = path.find('/', start);
+
+        while (Link *link = dynamic_cast<Link *>(current)) {
+            FileSystemObject *target = link->getTarget();
+            Directory *targetDir = dynamic_cast<Directory *>(target);
+            if (targetDir) {
+                current = targetDir;
+            } else {
+                return nullptr;
+            }
+        }
+        return current;
     }
 
-    string directory = path.substr(start);
-    if (directory == "..") {
-        if (targetDirectory->getParent() != nullptr) {
-            targetDirectory = targetDirectory->getParent();
-        }
-    } else {
-        bool found = false;
-        for (auto &obj: targetDirectory->getObjects()) {
-            if (obj->getName() == directory && dynamic_cast<Directory *>(obj) != nullptr) {
-                targetDirectory = dynamic_cast<Directory *>(obj);
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            cout << "Directory not found: " << directory << endl;
-            return;
+    void cd(const string &path) {
+        Directory *directory = findDirectory(path);
+        if (directory == nullptr) {
+            Logger::logObjectNotFound(path);
+        } else {
+            home->setCurrentDirectory(directory);
+            Logger::logDest();
+            home->getCurrentDirectory()->toString();
         }
     }
-    fileSystem->setCurrentDirectory(targetDirectory);
-    cout << "You are in: " << endl;
-    fileSystem->getCurrentDirectory()->toString();
-}
+};
+
 
 int main() {
 
     FileSystem home;
     Directory *root = home.getRootDirectory();
+    UserControlSystem *userControlSystem = new UserControlSystem(&home);
 
     string input;
     while (true) {
-        cout << "Enter a command (mkdir, touch, move, rm, ls, cd, exit): ";
+        cout << "Enter a command (mkdir, touch, move, rm, ls, cd, man, exit):";
         getline(cin, input);
 
         stringstream ss(input);
@@ -88,38 +223,45 @@ int main() {
             string dirname;
             ss >> dirname;
             if (dirname == "") {
-                cout << "Incorrect filename" << endl;
+                Logger::logIncorrectFileName();
                 continue;
+            } else {
+                userControlSystem->mkdir(dirname);
             }
-            Directory *newDir = new Directory(dirname, home.getCurrentDirectory());
-            root->addObject(newDir);
         } else if (command == "touch") {
             string filename, extension;
             size_t size;
             ss >> filename >> extension >> size;
-            File *newFile = new File(filename, home.getCurrentDirectory(), extension, size);
-            root->addObject(newFile);
+
+            userControlSystem->touchFile(filename, extension, size);
+        } else if (command == "ln") {
+            string filename, extension, targetPath, type;
+            size_t size;
+            ss >> type >> filename >> targetPath >> extension >> size;
+            if (type == "-s" || type == "-h") {
+                userControlSystem->touchLink(filename, type, targetPath, extension, size);
+            } else {
+                Logger::logIncorrectLinkType(type);
+            }
         } else if (command == "rm") {
             string name;
             ss >> name;
-            FileSystemObject *target = nullptr;
-            for (auto &obj: home.getCurrentDirectory()->getObjects()) {
-                if (obj->getName() == name) {
-                    target = obj;
-                    break;
-                }
-            }
-            if (target == nullptr) {
-                cout << "Object not found: " << name << endl;
-            } else {
-                target->remove();
-            }
+
+            userControlSystem->rm(name);
         } else if (command == "ls") {
-            home.getCurrentDirectory()->printInner();
+            userControlSystem->ls();
         } else if (command == "cd") {
             string path;
             ss >> path;
-            cd(path, &home, root);
+
+            userControlSystem->cd(path);
+        } else if (command == "man") {
+            cout << "User manual" << endl;
+            cout << "1) mkdir directoryName" << endl;
+            cout << "2) touch filename extension size" << endl;
+            cout << "3) ln type(-s/-h) linkName targetPath extension size" << endl;
+            cout << "4) ls" << endl;
+            cout << "5) cd path" << endl;
         } else if (command == "exit") {
             break;
         } else {
@@ -127,6 +269,7 @@ int main() {
         }
     }
 
+    delete &home;
 
     return 0;
 }

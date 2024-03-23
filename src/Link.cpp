@@ -9,8 +9,9 @@
 
 using namespace std;
 
-Link::Link(const string &objectName, Directory *parentObject, FileSystemObject *target)
-        : FileSystemObject(objectName, parentObject), target(target) {}
+Link::Link(const string &objectName, Directory *parentObject, FileSystemObject *target, const string &extension,
+           size_t size) : FileSystemObject(objectName, parentObject), target(target), extension(extension),
+                          size(size) {}
 
 Link::~Link() {
     cout << "Link " << name << " Deleted" << endl;
@@ -31,6 +32,7 @@ void Link::move(Directory *oldDirectory, Directory *newDirectory) {
 }
 
 void Link::toString() {
+    cout << "Type: Link" << endl;
     FileSystemObject::toString();
     cout << "Points to: " << endl;
     target->toString();
