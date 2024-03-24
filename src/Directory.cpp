@@ -12,13 +12,17 @@ Directory::Directory(const string &objectName, Directory *parentObject)
 
 Directory::~Directory() {
     cout << "Directory " << name << " Deleted" << endl;
-    clearVector();
 }
 
 void Directory::remove() {
-    clearVector();
-    if (parent != nullptr) {
-        parent->removeElement(getName());
+    if(name == "/" || name == "root" || name == "root/"){
+        return;
+    }
+    else{
+        clearVector();
+        if (parent != nullptr) {
+            parent->removeElement(name);
+        }
     }
 }
 

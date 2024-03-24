@@ -27,7 +27,7 @@ public:
 
     virtual ~FileSystemObject();
 
-    virtual void remove();
+    virtual void remove() = 0;
 
     void modifyDate();
 

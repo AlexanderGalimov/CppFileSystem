@@ -103,14 +103,6 @@ public:
         }
     }
 
-    bool isRoot(const string &name) {
-        if (name == "root" || name == "/") {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     void touchLink(const string &name, const string &type, const string &path, const string &ext, size_t size) {
         FileSystemObject *targetObject = findDirectory(path);
         if (targetObject != nullptr) {
@@ -145,7 +137,7 @@ public:
 
         Directory *current;
 
-        if (path == "root" || path == "root/") {
+        if (path == "root" || path == "root/" || path == "/") {
             return home->getRootDirectory();
         }
 
@@ -173,18 +165,30 @@ public:
                     found = true;
                     break;
                 }
+
+                SymbolicLink *symbolicLink = dynamic_cast<SymbolicLink *>(object);
+                if (symbolicLink && symbolicLink->getName() == comp) {
+                    FileSystemObject *target = symbolicLink->getTarget();
+                    Directory *targetDir = dynamic_cast<Directory *>(target);
+                    if (targetDir) {
+                        current = targetDir;
+                        found = true;
+                        break;
+                    }
+                }
+
+                SymbolicLink *hardLink = dynamic_cast<SymbolicLink *>(object);
+                if (hardLink && hardLink->getName() == comp) {
+                    FileSystemObject *target = hardLink->getTarget();
+                    Directory *targetDir = dynamic_cast<Directory *>(target);
+                    if (targetDir) {
+                        current = targetDir;
+                        found = true;
+                        break;
+                    }
+                }
             }
             if (!found) {
-                return nullptr;
-            }
-        }
-
-        while (Link *link = dynamic_cast<Link *>(current)) {
-            FileSystemObject *target = link->getTarget();
-            Directory *targetDir = dynamic_cast<Directory *>(target);
-            if (targetDir) {
-                current = targetDir;
-            } else {
                 return nullptr;
             }
         }
@@ -246,8 +250,11 @@ int main() {
         } else if (command == "rm") {
             string name;
             ss >> name;
-
-            userControlSystem->rm(name);
+            if (name == "/") {
+                Logger::logIncorrectFileName();
+            } else {
+                userControlSystem->rm(name);
+            }
         } else if (command == "ls") {
             userControlSystem->ls();
         } else if (command == "cd") {

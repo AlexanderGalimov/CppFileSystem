@@ -6,7 +6,7 @@
 #include <iostream>
 
 void HardLink::remove() {
-    delete target;
+    target->remove();
     Link::remove();
 }
 

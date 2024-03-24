@@ -19,8 +19,7 @@ FileSystemObject::FileSystemObject(const string &objectName, Directory *parentOb
 FileSystemObject::~FileSystemObject() {
 }
 
-void FileSystemObject::remove() {
-    delete this;
+void FileSystemObject::remove(){
 }
 
 void FileSystemObject::modifyDate() {

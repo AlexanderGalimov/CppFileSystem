@@ -19,7 +19,7 @@ Link::~Link() {
 
 void Link::remove() {
     if (parent != nullptr) {
-        parent->removeElement(getName());
+        parent->removeElement(name);
     }
 }
 
@@ -32,7 +32,6 @@ void Link::move(Directory *oldDirectory, Directory *newDirectory) {
 }
 
 void Link::toString() {
-    cout << "Type: Link" << endl;
     FileSystemObject::toString();
     cout << "Points to: " << endl;
     target->toString();
