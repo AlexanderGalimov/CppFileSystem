@@ -39,6 +39,8 @@ public:
 
     const string &getDestination() const;
 
+    virtual void move(Directory *oldDirectory, Directory *newDirectory) = 0;
+
     void setDestination(const string &newDestination);
 
     void setParent(Directory *newParent);

@@ -15,14 +15,9 @@ Directory::~Directory() {
 }
 
 void Directory::remove() {
-    if(name == "/" || name == "root" || name == "root/"){
-        return;
-    }
-    else{
-        clearVector();
-        if (parent != nullptr) {
-            parent->removeElement(name);
-        }
+    clearVector();
+    if (parent != nullptr) {
+        parent->removeElement(name);
     }
 }
 
@@ -37,27 +32,55 @@ void Directory::rename(const string &newName) {
     FileSystemObject::rename(newName);
 }
 
+bool Directory::isRoot(){
+    if(destination == "/" && name == "root"){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
 void Directory::move(Directory *oldDirectory, Directory *newDirectory) {
+    if(isRoot()){
+        return;
+    }
     destination = newDirectory->getDestination() + "/" + name;
     newDirectory->addObject(this);
-    oldDirectory->removeElement(name);
+    oldDirectory->unlinkElement(name);
     setParent(newDirectory);
     modifyDate();
 }
 
 void Directory::removeElement(const string &elementName) {
+    int index = getElementIndex(elementName);
+    if (index != -1){
+        delete objects[index];
+        objects.erase(objects.begin() + index);
+        modifyDate();
+    }
+}
+
+int Directory::getElementIndex(const string& elementName){
     for (int i = 0; i < objects.size(); ++i) {
         if (objects[i]->getName() == elementName) {
-            delete objects[i];
-            objects.erase(objects.begin() + i);
-            return;
+            return i;
         }
     }
-    modifyDate();
+    return -1;
+}
+
+void Directory::unlinkElement(const string& elementName){
+    int index = getElementIndex(elementName);
+    objects.erase(objects.begin() + index);
 }
 
 void Directory::addObject(FileSystemObject *object) {
-    object->setDestination(destination + "/" + object->getName());
+    if(isRoot()){
+        object->setDestination(destination + object->getName());
+    } else{
+        object->setDestination(destination + "/" + object->getName());
+    }
     object->setParent(this);
     objects.push_back(object);
     modifyDate();

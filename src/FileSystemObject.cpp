@@ -39,6 +39,9 @@ const string &FileSystemObject::getDateOfCreation() const {
     return dateOfCreation;
 }
 
+void FileSystemObject::move(Directory *oldDirectory, Directory *newDirectory) {
+}
+
 const string &FileSystemObject::getDestination() const {
     return destination;
 }

@@ -23,7 +23,7 @@ public:
 
     void setExtension(const string &newExtension);
 
-    void move(Directory *oldDirectory, Directory *newDirectory);
+    void move(Directory *oldDirectory, Directory *newDirectory) override;
 
     void remove() override;
 

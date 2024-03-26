@@ -6,6 +6,7 @@
 
 FileSystem::FileSystem() : root("root", &root) {
     currentDirectory = &root;
+    currentDirectory->setDestination("/");
 }
 
 FileSystem::~FileSystem() {

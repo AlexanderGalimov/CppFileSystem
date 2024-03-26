@@ -25,7 +25,7 @@ void File::remove() {
 void File::move(Directory *oldDirectory, Directory *newDirectory) {
     destination = newDirectory->getDestination() + "/" + name;
     newDirectory->addObject(this);
-    oldDirectory->removeElement(name);
+    oldDirectory->unlinkElement(name);
     setParent(newDirectory);
     modifyDate();
 }

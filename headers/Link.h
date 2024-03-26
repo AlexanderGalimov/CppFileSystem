@@ -26,7 +26,7 @@ public:
 
     void remove() override;
 
-    void move(Directory *oldDirectory, Directory *newDirectory);
+    void move(Directory *oldDirectory, Directory *newDirectory) override;
 
     virtual void toString() override;
 

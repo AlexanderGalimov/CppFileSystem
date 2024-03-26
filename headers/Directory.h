@@ -25,9 +25,11 @@ public:
 
     void rename(const string &newName) override;
 
-    void move(Directory *oldDirectory, Directory *newDirectory);
+    int getElementIndex(const string& name);
 
     void removeElement(const string &elementName);
+
+    void unlinkElement(const string& elementName);
 
     void addObject(FileSystemObject *object);
 
@@ -35,7 +37,11 @@ public:
 
     void printInner();
 
+    bool isRoot();
+
     const vector<FileSystemObject *> &getObjects() const;
+
+    void move(Directory *oldDirectory, Directory *newDirectory) override;
 };
 
 #endif //TASK2_DIRECTORY_H

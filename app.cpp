@@ -12,6 +12,15 @@
 
 #include <sstream>
 
+//4.	Файловая система.
+// Необходимо смоделировать файловую систему ОС Unix (без прав доступа).
+// Файловая система состоит из папок, фалов и ссылок.
+// Ссылки бывают 2-х видов жесткие и символьные
+// (при удалении жесткой ссылки удаляется заодно и сам файл/папка, на который эта ссылка ссылается, точнее оба имени являются абсолютно равноправными).
+// Файлы имеют размер, расширение, кроме того файлы и папки имеют атрибуты: время создания, время изменения и т.п.
+// Файловая система имеет только один корень, представляющий собой папку, которую нельзя удалить.
+// Для каждого элемента файловой системы предусмотреть операции создания, переименования, перемещения, изменения (меняется дата изменения) и удаления.
+
 
 class Logger {
 public:
@@ -22,6 +31,10 @@ public:
 
     static void logIncorrectFileName() {
         cout << "Incorrect filename" << endl;
+    }
+
+    static void logAlreadyExist(const string &name) {
+        cout << "Object with name: " << name << " Already exists" << endl;
     }
 
     static void logObjectNotFound(const string &name) {
@@ -63,6 +76,10 @@ public:
     static void logDest() {
         cout << "You are in: " << endl;
     }
+
+    static void logRoot() {
+        cout << "Can't do this action with root" << endl;
+    }
 };
 
 class UserControlSystem {
@@ -88,7 +105,7 @@ public:
         home->getCurrentDirectory()->printInner();
     }
 
-    void rm(const string &name) {
+    FileSystemObject *findInCurrent(const string &name) {
         FileSystemObject *target = nullptr;
         for (auto &obj: home->getCurrentDirectory()->getObjects()) {
             if (obj->getName() == name) {
@@ -96,15 +113,52 @@ public:
                 break;
             }
         }
+        return target;
+    }
+
+    void rm(const string &name) {
+        FileSystemObject *target = findInCurrent(name);
         if (target == nullptr) {
             Logger::logObjectNotFound(name);
         } else {
+            Link *link = dynamic_cast<Link *>(target);
+            if (link != nullptr) {
+                if (link->getTarget()->getName() == "root" || link->getTarget()->getDestination() == "/") {
+                    Logger::logRoot();
+                    return;
+                }
+            }
             target->remove();
         }
     }
 
+    void move(const string &name, const string &destination) {
+        FileSystemObject *object = findInCurrent(name);
+
+        if (object == nullptr) {
+            Logger::logIncorrectFileName();
+            return;
+        }
+        if (destination[0] == '/') {
+            Directory *directory = findDirectory(destination);
+            if (directory == nullptr) {
+                Logger::logObjectNotFound(destination);
+                return;
+            } else {
+                object->move(home->getCurrentDirectory(), directory);
+            }
+        } else {
+            FileSystemObject *target = findInCurrent(destination);
+            if (target != nullptr) {
+                Logger::logAlreadyExist(destination);
+            } else {
+                object->rename(destination);
+            }
+        }
+    }
+
     void touchLink(const string &name, const string &type, const string &path, const string &ext, size_t size) {
-        FileSystemObject *targetObject = findDirectory(path);
+        FileSystemObject *targetObject = findObjectInPath(path);
         if (targetObject != nullptr) {
             if (type == "-s") {
                 SymbolicLink *newLink = new SymbolicLink(name, home->getCurrentDirectory(), targetObject, ext, size);
@@ -123,6 +177,41 @@ public:
         home->getCurrentDirectory()->addObject(newFile);
     }
 
+    FileSystemObject *findObjectInPath(const string &path) {
+        if (path.empty()) {
+            Logger::logIncorrectFileName();
+            return nullptr;
+        }
+
+        if (path == "/") {
+            return root;
+        }
+
+        Directory *current = home->getRootDirectory();
+
+        if (path == "..") {
+            return current->getParent();
+        }
+
+        vector<string> components;
+        stringstream ss(path);
+        string component;
+        while (getline(ss, component, '/')) {
+            if (!component.empty() && component != ".") {
+                components.push_back(component);
+            }
+        }
+
+        for (const string &comp: components) {
+            for (FileSystemObject *object: current->getObjects()) {
+                if (object->getName() == comp) {
+                    return object;
+                }
+            }
+        }
+        return nullptr;
+    }
+
     Directory *findDirectory(const string &path) {
         if (path.empty()) {
             Logger::logIncorrectFileName();
@@ -137,12 +226,8 @@ public:
 
         Directory *current;
 
-        if (path == "root" || path == "root/" || path == "/") {
+        if (path == "root" || path == "/") {
             return home->getRootDirectory();
-        }
-
-        if (path[0] == '/') {
-            current = root;
         } else {
             current = home->getCurrentDirectory();
         }
@@ -155,9 +240,9 @@ public:
                 components.push_back(component);
             }
         }
-
+        bool found;
         for (const string &comp: components) {
-            bool found = false;
+            found = false;
             for (FileSystemObject *object: current->getObjects()) {
                 Directory *dir = dynamic_cast<Directory *>(object);
                 if (dir && dir->getName() == comp) {
@@ -188,9 +273,9 @@ public:
                     }
                 }
             }
-            if (!found) {
-                return nullptr;
-            }
+        }
+        if (!found) {
+            return nullptr;
         }
         return current;
     }
@@ -211,7 +296,6 @@ public:
 int main() {
 
     FileSystem home;
-    Directory *root = home.getRootDirectory();
     UserControlSystem *userControlSystem = new UserControlSystem(&home);
 
     string input;
@@ -226,7 +310,7 @@ int main() {
         if (command == "mkdir") {
             string dirname;
             ss >> dirname;
-            if (dirname == "") {
+            if (dirname == "" || dirname == "root") {
                 Logger::logIncorrectFileName();
                 continue;
             } else {
@@ -250,7 +334,7 @@ int main() {
         } else if (command == "rm") {
             string name;
             ss >> name;
-            if (name == "/") {
+            if (name == "root") {
                 Logger::logIncorrectFileName();
             } else {
                 userControlSystem->rm(name);
@@ -262,6 +346,14 @@ int main() {
             ss >> path;
 
             userControlSystem->cd(path);
+        } else if (command == "mv") {
+            string name, destination;
+            ss >> name >> destination;
+            if (name == "" || destination == "" || name == "root") {
+                Logger::logIncorrectFileName();
+            } else {
+                userControlSystem->move(name, destination);
+            }
         } else if (command == "man") {
             cout << "User manual" << endl;
             cout << "1) mkdir directoryName" << endl;
@@ -269,14 +361,13 @@ int main() {
             cout << "3) ln type(-s/-h) linkName targetPath extension size" << endl;
             cout << "4) ls" << endl;
             cout << "5) cd path" << endl;
+            cout << "6) mv filename path" << endl;
         } else if (command == "exit") {
             break;
         } else {
             cout << "Unknown command" << endl;
         }
     }
-
-    delete &home;
 
     return 0;
 }
