@@ -61,7 +61,7 @@ Directory *FileSystemObject::getParent() const {
 void FileSystemObject::rename(const string &newName) {
     name = newName;
     size_t slashIndex = newName.find_last_of('/');
-    destination = newName.substr(0, slashIndex + 1);
+    destination = destination.substr(0, destination.find_last_of('/') + 1) + newName;
     modifyDate();
     cout << "Name changed to: " << newName << endl;
 }

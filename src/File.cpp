@@ -20,6 +20,9 @@ void File::remove() {
     if (parent != nullptr) {
         parent->removeElement(getName());
     }
+    else{
+        delete this;
+    }
 }
 
 void File::move(Directory *oldDirectory, Directory *newDirectory) {
@@ -43,6 +46,10 @@ const string &File::getExtension() const {
 
 size_t File::getSize() const {
     return size;
+}
+
+void File::setSize(size_t newSize) {
+    File::size = newSize;
 }
 
 File::File(const string &objectName, Directory *parentObject, const string &extension, size_t size) : FileSystemObject(

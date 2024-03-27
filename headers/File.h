@@ -32,6 +32,8 @@ public:
     const string &getExtension() const;
 
     size_t getSize() const;
+
+    void setSize(size_t size);
 };
 
 #endif //TASK2_FILE_H

@@ -18,6 +18,8 @@ void Directory::remove() {
     clearVector();
     if (parent != nullptr) {
         parent->removeElement(name);
+    } else{
+        delete this;
     }
 }
 

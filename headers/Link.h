@@ -33,6 +33,14 @@ public:
     void setTarget(FileSystemObject *newTarget);
 
     FileSystemObject *getTarget() const;
+
+    void setExtension(const string &extension);
+
+    void setSize(size_t size);
+
+    const string &getExtension() const;
+
+    size_t getSize() const;
 };
 
 

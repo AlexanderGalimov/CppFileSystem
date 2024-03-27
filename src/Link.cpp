@@ -21,6 +21,9 @@ void Link::remove() {
     if (parent != nullptr) {
         parent->removeElement(name);
     }
+    else{
+        delete this;
+    }
 }
 
 void Link::move(Directory *oldDirectory, Directory *newDirectory) {
@@ -44,4 +47,20 @@ void Link::setTarget(FileSystemObject *newTarget) {
 
 FileSystemObject *Link::getTarget() const {
     return target;
+}
+
+void Link::setExtension(const string &newExtension) {
+    Link::extension = newExtension;
+}
+
+void Link::setSize(size_t newSize) {
+    Link::size = newSize;
+}
+
+const string &Link::getExtension() const {
+    return extension;
+}
+
+size_t Link::getSize() const {
+    return size;
 }
