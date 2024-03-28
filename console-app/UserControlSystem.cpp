@@ -37,11 +37,9 @@ void UserControlSystem::rm(const string& path) {
         Logger::logObjectNotFound(path);
     } else {
         Link* link = dynamic_cast<Link*>(target);
-        if (link != nullptr) {
-            if (link->getTarget()->getName() == "root" || link->getTarget()->getDestination() == "/") {
-                Logger::logRoot();
-                return;
-            }
+        if (link->getTarget()->getName() == "root" || link->getTarget()->getDestination() == "/") {
+            Logger::logRoot();
+            return;
         }
         target->remove();
     }
@@ -134,7 +132,7 @@ FileSystemObject* UserControlSystem::findObjectInPath(const string& path) {
 
 
 Directory* UserControlSystem::findDirectory(const string& path) {
-    if (path == "root" || path == "/") {
+    if (path == "/") {
         return home->getRootDirectory();
     }
 

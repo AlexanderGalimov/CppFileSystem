@@ -49,7 +49,6 @@ int main() {
             string filename, extension;
             size_t size;
             ss >> filename >> extension >> size;
-
             userControlSystem->touchFile(filename, extension, size);
         } else if (command == "ln") {
             string filename, extension, targetPath, type;

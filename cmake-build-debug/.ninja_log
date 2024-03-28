@@ -43,3 +43,6 @@
 668	852	7333118277020436	Task2.exe	2ad86df4e0fb6b56
 6	626	7333118590815471	CMakeFiles/Task2.dir/src/Directory.cpp.obj	b0a7bf34c657b02d
 627	811	7333118592665197	Task2.exe	2ad86df4e0fb6b56
+6	650	7333142671885735	CMakeFiles/Task2.dir/app.cpp.obj	721198f5df9d1bd9
+14	798	7333142673365772	CMakeFiles/Task2.dir/console-app/UserControlSystem.cpp.obj	24f99c46d80c2b33
+798	1072	7333142676045688	Task2.exe	2ad86df4e0fb6b56
