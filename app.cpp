@@ -46,8 +46,12 @@ int main() {
             }
         } else if (command == "touch") {
             string filename, extension;
-            size_t size;
+            size_t size = -1;
             ss >> filename >> extension >> size;
+            if(filename == "" || extension == "" || size == -1){
+                Logger::logIncorrectFileName();
+                continue;
+            }
             userControlSystem->touchFile(filename, extension, size);
         } else if (command == "ln") {
             string filename, extension, targetPath, type;
