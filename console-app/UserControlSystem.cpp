@@ -31,10 +31,10 @@ FileSystemObject* UserControlSystem::findInCurrent(const string& name) {
     return target;
 }
 
-void UserControlSystem::rm(const string& name) {
-    FileSystemObject* target = findInCurrent(name);
+void UserControlSystem::rm(const string& path) {
+    FileSystemObject* target = findObjectInPath(path);
     if (target == nullptr) {
-        Logger::logObjectNotFound(name);
+        Logger::logObjectNotFound(path);
     } else {
         Link* link = dynamic_cast<Link*>(target);
         if (link != nullptr) {

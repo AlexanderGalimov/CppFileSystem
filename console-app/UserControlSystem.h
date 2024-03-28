@@ -27,7 +27,7 @@ public:
 
     FileSystemObject* findInCurrent(const string& name);
 
-    void rm(const string& name);
+    void rm(const string& path);
 
     void move(const string& name, const string& destination);
 

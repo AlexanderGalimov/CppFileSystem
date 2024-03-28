@@ -97,12 +97,6 @@ build CMakeFiles/Task2.dir/src/FileSystem.cpp.obj: CXX_COMPILER__Task2_Debug D$:
   OBJECT_DIR = CMakeFiles\Task2.dir
   OBJECT_FILE_DIR = CMakeFiles\Task2.dir\src
 
-build CMakeFiles/Task2.dir/FSObjectTest.cpp.obj: CXX_COMPILER__Task2_Debug D$:/sem6/cpp/Task2/FSObjectTest.cpp || cmake_object_order_depends_target_Task2
-  DEP_FILE = CMakeFiles\Task2.dir\FSObjectTest.cpp.obj.d
-  FLAGS = -g -std=gnu++14
-  OBJECT_DIR = CMakeFiles\Task2.dir
-  OBJECT_FILE_DIR = CMakeFiles\Task2.dir
-
 build CMakeFiles/Task2.dir/console-app/UserControlSystem.cpp.obj: CXX_COMPILER__Task2_Debug D$:/sem6/cpp/Task2/console-app/UserControlSystem.cpp || cmake_object_order_depends_target_Task2
   DEP_FILE = CMakeFiles\Task2.dir\console-app\UserControlSystem.cpp.obj.d
   FLAGS = -g -std=gnu++14
@@ -141,7 +135,7 @@ build CMakeFiles/Task2.dir/test/LinkTest.cpp.obj: CXX_COMPILER__Task2_Debug D$:/
 #############################################
 # Link the executable Task2.exe
 
-build Task2.exe: CXX_EXECUTABLE_LINKER__Task2_Debug CMakeFiles/Task2.dir/src/FileSystemObject.cpp.obj CMakeFiles/Task2.dir/src/Directory.cpp.obj CMakeFiles/Task2.dir/src/File.cpp.obj CMakeFiles/Task2.dir/src/Link.cpp.obj CMakeFiles/Task2.dir/src/SymbolicLink.cpp.obj CMakeFiles/Task2.dir/src/HardLink.cpp.obj CMakeFiles/Task2.dir/app.cpp.obj CMakeFiles/Task2.dir/src/FileSystem.cpp.obj CMakeFiles/Task2.dir/FSObjectTest.cpp.obj CMakeFiles/Task2.dir/console-app/UserControlSystem.cpp.obj CMakeFiles/Task2.dir/console-app/Logger.cpp.obj CMakeFiles/Task2.dir/test/DirectoryTest.cpp.obj CMakeFiles/Task2.dir/test/FileTest.cpp.obj CMakeFiles/Task2.dir/test/LinkTest.cpp.obj
+build Task2.exe: CXX_EXECUTABLE_LINKER__Task2_Debug CMakeFiles/Task2.dir/src/FileSystemObject.cpp.obj CMakeFiles/Task2.dir/src/Directory.cpp.obj CMakeFiles/Task2.dir/src/File.cpp.obj CMakeFiles/Task2.dir/src/Link.cpp.obj CMakeFiles/Task2.dir/src/SymbolicLink.cpp.obj CMakeFiles/Task2.dir/src/HardLink.cpp.obj CMakeFiles/Task2.dir/app.cpp.obj CMakeFiles/Task2.dir/src/FileSystem.cpp.obj CMakeFiles/Task2.dir/console-app/UserControlSystem.cpp.obj CMakeFiles/Task2.dir/console-app/Logger.cpp.obj CMakeFiles/Task2.dir/test/DirectoryTest.cpp.obj CMakeFiles/Task2.dir/test/FileTest.cpp.obj CMakeFiles/Task2.dir/test/LinkTest.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Task2.dir

@@ -61,12 +61,12 @@ int main() {
                 Logger::logIncorrectLinkType(type);
             }
         } else if (command == "rm") {
-            string name;
-            ss >> name;
-            if (name == "root") {
+            string path;
+            ss >> path;
+            if (path == "/") {
                 Logger::logIncorrectFileName();
             } else {
-                userControlSystem->rm(name);
+                userControlSystem->rm(path);
             }
         } else if (command == "ls") {
             userControlSystem->ls();
@@ -90,12 +90,13 @@ int main() {
             }
         } else if (command == "man") {
             cout << "User manual" << endl;
-            cout << "1) mkdir directoryName" << endl;
-            cout << "2) touch filename extension size" << endl;
-            cout << "3) ln type(-s/-h) linkName targetPath extension size" << endl;
+            cout << "1) mkdir directoryName (in current dir)" << endl;
+            cout << "2) touch filename extension size (in current dir)" << endl;
+            cout << "3) ln type(-s/-h) linkName targetPath extension size (in current dir)" << endl;
             cout << "4) ls" << endl;
             cout << "5) cd path" << endl;
             cout << "6) mv filename path" << endl;
+            cout << "7) rm path" << endl;
         } else if (command == "exit") {
             break;
         } else {

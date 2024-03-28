@@ -15,8 +15,8 @@ Directory::~Directory() {
 }
 
 void Directory::remove() {
-    clearVector();
     if (parent != nullptr) {
+        clearVector();
         parent->removeElement(name);
     } else{
         delete this;
