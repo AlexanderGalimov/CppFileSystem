@@ -36,10 +36,8 @@ void UserControlSystem::rm(const string& path) {
     if (target == nullptr) {
         Logger::logObjectNotFound(path);
     } else {
-        Link* link = dynamic_cast<Link*>(target);
-        if (link->getTarget()->getName() == "root" || link->getTarget()->getDestination() == "/") {
-            Logger::logRoot();
-            return;
+        if(target == home->getCurrentDirectory()){
+            home->setCurrentDirectory(home->getRootDirectory());
         }
         target->remove();
     }

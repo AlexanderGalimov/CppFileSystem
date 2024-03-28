@@ -6,7 +6,9 @@
 #include <iostream>
 
 void HardLink::remove() {
-    target->remove();
+    if(target->getDestination() != "/"){
+        target->remove();
+    }
     Link::remove();
 }
 
